@@ -3,31 +3,41 @@
     <div class="card__dots"></div>
     <div class="card__header">
       <div class="card__info">
-        <span class="card__number">00079</span>
-        <span class="card__gender">Laki - Laki</span>
+        <span class="card__number">{{ member.no }}</span>
+        <span class="card__gender">{{ member.gender }}</span>
       </div>
-      <img src="../assets/img/logo.png" alt class="card__img" />
+      <div class="card__picture" :style="photoMember"></div>
+      <!-- <img :src="member.photo" alt="member_photo" class="card__img" /> -->
     </div>
     <div class="card__content">
-      <p class="card__name">Dennis Thandy Nur Cahyono</p>
-      <p class="card__city">Bojonegoro</p>
-      <p class="card__class">C</p>
+      <p class="card__name">{{ capitalizeName }}</p>
+      <p class="card__city">{{ member.city }}</p>
     </div>
     <div class="card__footer">
       <ul class="card__social">
         <li>
-          <a href class="card__link">
+          <a :href="member.instagram" class="card__link">
             <img src="../assets/icon/instagram.svg" alt class="card__social--icon" />
           </a>
         </li>
         <li>
-          <a href class="card__link">
-            <img src="../assets/icon/instagram.svg" alt class="card__social--icon" />
+          <a :href="member.facebook" class="card__link">
+            <img src="../assets/icon/facebook.svg" alt class="card__social--icon" />
           </a>
         </li>
         <li>
-          <a href class="card__link">
-            <img src="../assets/icon/instagram.svg" alt class="card__social--icon" />
+          <a :href="member.twitter" class="card__link">
+            <img src="../assets/icon/twitter.svg" alt class="card__social--icon" />
+          </a>
+        </li>
+        <li>
+          <a :href="member.youtube" class="card__link">
+            <img src="../assets/icon/youtube.svg" alt class="card__social--icon" />
+          </a>
+        </li>
+        <li>
+          <a :href="member.github" class="card__link">
+            <img src="../assets/icon/github.svg" alt class="card__social--icon" />
           </a>
         </li>
       </ul>
@@ -38,6 +48,30 @@
 <script>
 export default {
   name: "card",
+  props: {
+    member: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    capitalizeName() {
+      const name = this.member.name.split(" ");
+      let rest = "";
+      for (let i = 0; i < name.length; i++) {
+        rest +=
+          name[i].charAt(0).toUpperCase() +
+          name[i].slice(1).toLowerCase() +
+          " ";
+      }
+      return rest;
+    },
+    photoMember() {
+      return {
+        backgroundImage: `url(${this.member.photo})`,
+      };
+    },
+  },
 };
 </script>
 
@@ -50,24 +84,29 @@ export default {
   padding: 2.25rem 1rem;
   box-shadow: 3px 3px 0 rgba($color: #000000, $alpha: 0.7);
   position: relative;
+  margin-bottom: 2.75rem;
 
   &__header {
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   &__info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
-  &__img {
-    width: 10rem;
+  &__picture {
+    width: 14rem;
+    height: 10rem;
+    margin: auto;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   &__content {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   &__social {
@@ -78,7 +117,7 @@ export default {
     }
 
     &--icon {
-      width: 1.75rem;
+      width: 1.5rem;
     }
   }
 

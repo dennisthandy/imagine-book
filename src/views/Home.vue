@@ -1,9 +1,9 @@
 <template>
   <div class="home">
-    <input type="text" placeholder="Cari . . ." class="home__search" />
+    <input type="text" placeholder="Cari Nama . . ." class="home__search" v-model="searchName" />
     <cover-slider :slider="slider" @openSlider="openSlider"></cover-slider>
     <div class="cards">
-      <card></card>
+      <card v-for="member in members" :key="member.no" :member="member"></card>
     </div>
   </div>
 </template>
@@ -22,12 +22,29 @@ export default {
   data() {
     return {
       slider: false,
+      members: this.$store.state.members,
+      searchName: "",
     };
+  },
+  watch: {
+    searchName() {
+      if (this.searchName === "") {
+        this.members = this.$store.state.members;
+      }
+      this.searchMember();
+    },
   },
   methods: {
     openSlider() {
       this.slider = !this.slider;
       localStorage.setItem("slider", this.slider);
+    },
+    searchMember() {
+      this.members = this.members.filter((member) => {
+        return member.name
+          .toLowerCase()
+          .includes(this.searchName.toLowerCase());
+      });
     },
   },
   created() {
