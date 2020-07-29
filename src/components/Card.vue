@@ -15,27 +15,22 @@
     </div>
     <div class="card__footer">
       <ul class="card__social">
-        <li>
+        <li v-if="member.instagram">
           <a :href="member.instagram" class="card__link">
             <img src="../assets/icon/instagram.svg" alt class="card__social--icon" />
           </a>
         </li>
-        <li>
+        <li v-if="member.facebook">
           <a :href="member.facebook" class="card__link">
             <img src="../assets/icon/facebook.svg" alt class="card__social--icon" />
           </a>
         </li>
-        <li>
-          <a :href="member.twitter" class="card__link">
-            <img src="../assets/icon/twitter.svg" alt class="card__social--icon" />
-          </a>
-        </li>
-        <li>
+        <li v-if="member.youtube">
           <a :href="member.youtube" class="card__link">
             <img src="../assets/icon/youtube.svg" alt class="card__social--icon" />
           </a>
         </li>
-        <li>
+        <li v-if="member.github">
           <a :href="member.github" class="card__link">
             <img src="../assets/icon/github.svg" alt class="card__social--icon" />
           </a>
