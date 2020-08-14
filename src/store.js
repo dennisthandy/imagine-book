@@ -910,7 +910,7 @@ export default new Vuex.Store({
    {
     no: 77,
     name: "Afni Sakinah",
-    gender: "Laki - Laki",
+    gender: "Perempuan",
     city: "Gresik",
     photo: "https://u.ph.edim.co/7da0/108932169_3_140.png",
     instagram: "https://www.instagram.com/afnsknh/",

@@ -1,23 +1,58 @@
 <template>
-  <div class="home">
-    <button
-      class="home__button home__button--search"
-      :class="{close : searchState}"
-      @click="searchState = !searchState"
-    ></button>
-    <div class="home__input home__input--box" v-show="searchState">
+  <div class="home relative flex flex-col justify-center items-center min-h-screen z-0">
+    <div
+      class="home__toolbar fixed flex flex-col h-48 justify-around bg-gray-500 bg-opacity-75 px-1 rounded-md"
+    >
+      <button
+        class="home__button home__button--search bg-white rounded-full p-1 shadow-lg focus:outline-none"
+        :class="{ close: searchState, active: searchState }"
+        @click="searchState = !searchState"
+      >
+        <span class="home__icon home__icon--search block no-repeat w-8 h-8"></span>
+      </button>
+      <button
+        class="home__button home__button--male bg-white rounded-full p-1 shadow-lg focus:outline-none"
+        @click="filterMember('Laki - Laki')"
+        :class="{ active: male }"
+      >
+        <span class="home__icon home__icon--male block no-repeat w-8 h-8"></span>
+      </button>
+      <button
+        class="home__button home__button--female bg-white rounded-full p-1 shadow-lg focus:outline-none"
+        @click="filterMember('Perempuan')"
+        :class="{ active: female }"
+      >
+        <span class="home__icon home__icon--female block no-repeat w-8 h-8"></span>
+      </button>
+    </div>
+
+    <div
+      class="home__input home__input--box flex fixed p-5 bg-gray-500 bg-opacity-75 rounded-md"
+      v-show="searchState"
+    >
       <input
         type="text"
         placeholder="Cari Nama . . ."
-        class="home__input home__input--search"
+        class="home__input home__input--search rounded-md px-1"
         v-model="searchName"
         @keypress.enter="searchMember"
       />
-      <button class="home__button home__button--submit" @click="searchMember"></button>
-      <button class="home__button home__button--clear" @click="clearSearch"></button>
+      <button
+        class="home__button home__button--submit mx-2 bg-white rounded-full p-1 shadow-lg focus:outline-none"
+        @click="searchMember"
+      >
+        <span class="home__icon home__icon--submit block no-repeat w-6 h-6"></span>
+      </button>
+      <button
+        class="home__button home__button--clear bg-white rounded-full p-1 shadow-lg focus:outline-none"
+        @click="clearSearch"
+      >
+        <span class="home__icon home__icon--clear block no-repeat w-6 h-6"></span>
+      </button>
     </div>
+
     <cover-slider :slider="slider" @openSlider="openSlider"></cover-slider>
-    <div class="cards">
+    <div class="cards flex flex-wrap justify-around" v-show="slider">
       <card v-for="member in members" :key="member.no" :member="member"></card>
     </div>
   </div>
@@ -30,6 +65,16 @@ import Card from "../components/Card";
 
 export default {
   name: "Home",
+  props: {
+    sliderState: {
+      required: true,
+      type: Boolean,
+    },
+    setSliderState: {
+      required: true,
+      type: Function,
+    },
+  },
   components: {
     CoverSlider,
     Card,
@@ -40,6 +85,8 @@ export default {
       members: this.$store.state.members,
       searchName: "",
       searchState: false,
+      male: false,
+      female: false,
     };
   },
   watch: {
@@ -53,6 +100,7 @@ export default {
     openSlider() {
       this.slider = !this.slider;
       localStorage.setItem("slider", this.slider);
+      this.$emit("setSliderState");
     },
     searchMember() {
       this.members = this.members.filter((member) => {
@@ -60,11 +108,35 @@ export default {
           .toLowerCase()
           .includes(this.searchName.toLowerCase());
       });
-      this.searchState = false;
     },
     clearSearch() {
       this.members = this.$store.state.members;
       this.searchName = "";
+    },
+    filterMember(gender) {
+      if (gender === "Laki - Laki" && !this.male) {
+        if (this.female) {
+          this.members = this.$store.state.members;
+          this.female = false;
+        }
+        this.members = this.members.filter((member) => {
+          return member.gender === gender;
+        });
+        this.male = true;
+      } else if (gender === "Perempuan" && !this.female) {
+        if (this.male) {
+          this.members = this.$store.state.members;
+          this.male = false;
+        }
+        this.members = this.members.filter((member) => {
+          return member.gender === gender;
+        });
+        this.female = true;
+      } else {
+        this.members = this.$store.state.members;
+        this.male = false;
+        this.female = false;
+      }
     },
   },
   created() {
@@ -74,75 +146,54 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-$break-desktop: 750px;
-
+<style lang="scss">
 .home {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  &__button {
-    padding: 1.25rem;
-    border-radius: 0.5rem;
-    box-shadow: 3px 3px 0 rgba($color: #000000, $alpha: 0.7);
-    border: 1px solid blue;
-    cursor: pointer;
-
-    &:active {
-      box-shadow: none;
-    }
+  &__toolbar {
+    top: 50%;
+    right: 0.5%;
+    transform: translateY(-50%);
   }
 
   &__button--search {
-    position: fixed;
-    right: 1.5%;
-    top: 50%;
-    transform: translateY(-50%);
-    background-image: url(../assets/icon/search-outline.svg);
-
-    &.close {
-      background-image: url(../assets/icon/close-square-outline.svg);
+    &.active {
+      @apply bg-orange-500;
     }
   }
 
-  &__button--submit {
-    background-image: url(../assets/icon/done-all-outline.svg);
-    margin-right: 0.75rem;
+  &__icon--search {
+    background-image: url(../assets/icon/search-outline.svg);
   }
 
-  &__button--clear {
-    background-image: url(../assets/icon/trash-2-outline.svg);
+  &__button--male {
+    &.active {
+      @apply bg-blue-500;
+    }
+  }
+
+  &__icon--male {
+    background-image: url(../assets/icon/male.svg);
+  }
+
+  &__button--female {
+    &.active {
+      @apply bg-pink-500;
+    }
+  }
+
+  &__icon--female {
+    background-image: url(../assets/icon/female.svg);
   }
 
   &__input--box {
-    position: fixed;
-    top: 30%;
-    z-index: 999;
-    padding: 1.5rem;
-    background-color: #ccc;
-    border-radius: 0.5rem;
-    box-shadow: 3px 3px 0 rgba($color: #000000, $alpha: 0.7);
-    display: flex;
+    top: 20%;
   }
 
-  &__input--search {
-    margin-right: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid blue;
-    box-shadow: 3px 3px 0 rgba($color: #000000, $alpha: 0.7);
-    font-size: 12pt;
+  &__icon--submit {
+    background-image: url(../assets/icon/done-all-outline.svg);
   }
-}
-.cards {
-  margin: 3rem;
-  @media (min-width: $break-desktop) {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+
+  &__icon--clear {
+    background-image: url(../assets/icon/trash-2-outline.svg);
   }
 }
 </style>

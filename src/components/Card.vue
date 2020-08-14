@@ -1,38 +1,45 @@
 <template>
-  <div class="card">
+  <div class="card w-64 h-auto p-2 m-4 rounded-lg shadow-lg bg-white">
     <div class="card__dots"></div>
     <div class="card__header">
-      <div class="card__info">
-        <span class="card__number">{{ member.no }}</span>
-        <span class="card__gender">{{ member.gender }}</span>
+      <div class="card__info flex w-full justify-between mb-3">
+        <span class="card__number w-8 text-center bg-gray-300 rounded-full">{{ member.no }}</span>
+        <span
+          class="card__gender px-2 rounded-lg text-white"
+          :class="genderStyle"
+        >{{ member.gender }}</span>
       </div>
-      <div class="card__picture" :style="photoMember"></div>
-      <!-- <img :src="member.photo" alt="member_photo" class="card__img" /> -->
+      <!-- <div class="card__picture w-full h-32 bg-no-repeat object-center" :style="photoMember"></div> -->
+      <img
+        :src="member.photo"
+        alt="member_photo"
+        class="card__img w-full h-48 object-cover object-top rounded-sm mb-3"
+      />
     </div>
-    <div class="card__content">
+    <div class="card__content mb-3">
       <p class="card__name">{{ capitalizeName }}</p>
       <p class="card__city">{{ member.city }}</p>
     </div>
-    <div class="card__footer">
-      <ul class="card__social">
+    <div class="card__footer mb-1">
+      <ul class="card__social flex justify-around">
         <li v-if="member.instagram">
           <a :href="member.instagram" class="card__link">
-            <img src="../assets/icon/instagram.svg" alt class="card__social--icon" />
+            <img src="../assets/icon/instagram.svg" alt class="card__social--icon w-8 h-8" />
           </a>
         </li>
         <li v-if="member.facebook">
           <a :href="member.facebook" class="card__link">
-            <img src="../assets/icon/facebook.svg" alt class="card__social--icon" />
+            <img src="../assets/icon/facebook.svg" alt class="card__social--icon w-8 h-8" />
           </a>
         </li>
         <li v-if="member.youtube">
           <a :href="member.youtube" class="card__link">
-            <img src="../assets/icon/youtube.svg" alt class="card__social--icon" />
+            <img src="../assets/icon/youtube.svg" alt class="card__social--icon w-8 h-8" />
           </a>
         </li>
         <li v-if="member.github">
           <a :href="member.github" class="card__link">
-            <img src="../assets/icon/github.svg" alt class="card__social--icon" />
+            <img src="../assets/icon/github.svg" alt class="card__social--icon w-8 h-8" />
           </a>
         </li>
       </ul>
@@ -61,100 +68,9 @@ export default {
       }
       return rest;
     },
-    photoMember() {
-      return {
-        backgroundImage: `url(${this.member.photo})`,
-      };
+    genderStyle() {
+      return this.member.gender === "Perempuan" ? "bg-pink-500" : "bg-blue-500";
     },
   },
 };
 </script>
-
-<style scoped lang="scss">
-.card {
-  width: 16rem;
-  height: 21.5rem;
-  border: 1px solid purple;
-  border-radius: 0.75rem;
-  padding: 2.25rem 1rem;
-  box-shadow: 3px 3px 0 rgba($color: #000000, $alpha: 0.7);
-  position: relative;
-  margin-bottom: 2.75rem;
-
-  &__header {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  &__info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  &__picture {
-    width: 14rem;
-    height: 10rem;
-    margin: auto;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-
-  &__content {
-    margin-bottom: 1rem;
-  }
-
-  &__social {
-    display: flex;
-    justify-content: space-around;
-    li {
-      list-style: none;
-    }
-
-    &--icon {
-      width: 1.5rem;
-    }
-  }
-
-  // extends for dots
-  %dots {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  &__dots {
-    @extend %dots;
-    top: 1.5%;
-    left: 3%;
-    background-color: red;
-
-    &::before {
-      @extend %dots;
-      content: "";
-      left: 150%;
-      background-color: yellow;
-    }
-
-    &::after {
-      @extend %dots;
-      content: "";
-      left: 300%;
-      background-color: green;
-    }
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1.5rem;
-    border-bottom: 1px solid purple;
-    background-color: rgba($color: #c4c4c4, $alpha: 1);
-    border-radius: 0.75rem 0.75rem 0 0;
-  }
-}
-</style>
