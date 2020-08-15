@@ -1,4 +1,4 @@
-# imagine-book
+# IMAGINE 2016
 
 ## Project setup
 ```
